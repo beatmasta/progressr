@@ -8,7 +8,7 @@
  *
  */
 
-(function($) {
+;(function($) {
 
     $.fn.progressr = function(options) {
 
