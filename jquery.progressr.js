@@ -43,13 +43,15 @@
             };
             var guessSingleItem = function() {
                 return ( $(opts.singleItemSelector).length ? opts.singleItemSelector :
-                                                             '>' + (loadContainer.children().eq(0).attr("id") ?
-                                                             '#' + loadContainer.children().eq(0).attr("id") :
-                                                             loadContainer.children().eq(0).prop("tagName").toLowerCase()) );
+                    '>' + (loadContainer.children().eq(0).attr("id") ?
+                        '#' + loadContainer.children().eq(0).attr("id") :
+                        loadContainer.children().eq(0).prop("tagName").toLowerCase()) );
             };
 
             var reqUrl = guessNextHref( $(opts.nextSelector) );
             var singleItemSel = guessSingleItem();
+            var fadeTime = (opts.fadeIn ? parseInt(opts.fadeIn) : 0);
+            var ajaxInProgress = false;
             var newItems;
 
             // bind scroll event to the selector
@@ -62,34 +64,37 @@
                     return false;
                 }
                 // check if we have reached to the end of the scroll container
-                if ( $(this).scrollTop() + $(this).height() + extraPixels >= $(this)[0].scrollHeight ) {
+                if ( $(this).scrollTop() + $(this).height() + extraPixels >= $(this)[0].scrollHeight && ! ajaxInProgress ) {
                     // process the GET type ajax request
+                    ajaxInProgress = true;
                     $.ajax({
                         type: "GET",
                         url: reqUrl
                     }).done(function(data) { // in case of success
-                        var respObj = $(data);
-                        // pre item load callbacks
-                        opts.beforeLoad.call();
-                        // reassign the url variable
-                        // to be given to next ajax request object
-                        reqUrl = guessNextHref( respObj.find(opts.nextSelectors) );
-                        // find the newly loaded items and append
-                        // to "loadContainer" element (defined in options)
-                        newItems = respObj.find(singleItemSel).hide();
-                        loadContainer.append(newItems);
-                        // show items immediately or fade in based on "fadeIn" option value
-                        newItems.fadeIn(opts.fadeIn ? parseInt(opts.fadeIn) : 0, function() {
-                            // post item load callbacks
-                            opts.afterLoad.call(this, newItems);
-						});
-                    }).fail(function(data) { // in case of failure
-                        // proceed to callback
-                        opts.onFailure.call(this, data);
-                    }).always(function(data) { // always called after request
-                        // proceed to callback
-                        opts.onRequestComplete.call(this, data);
-                    });
+                            var respObj = $(data);
+                            // pre item load callbacks
+                            opts.beforeLoad.call();
+                            // reassign the url variable
+                            // to be given to next ajax request object
+                            reqUrl = guessNextHref( respObj.find(opts.nextSelectors) );
+                            // find the newly loaded items and append
+                            // to "loadContainer" element (defined in options)
+                            newItems = respObj.find(singleItemSel).hide();
+                            loadContainer.append(newItems);
+                            // show items immediately or fade in based on "fadeIn" option value
+                            newItems.fadeIn(fadeTime);
+                            window.setTimeout(function() {
+                                // post item load callbacks
+                                opts.afterLoad.call(this, newItems);
+                            }, fadeTime + 1); // add one extra millisecond to be sure afterLoad is processed after fadeIn
+                        }).fail(function(data) { // in case of failure
+                            // proceed to callback
+                            opts.onFailure.call(this, data);
+                        }).always(function(data) { // always called after request
+                            ajaxInProgress = false;
+                            // proceed to callback
+                            opts.onRequestComplete.call(this, data);
+                        });
                 }
             });
 
