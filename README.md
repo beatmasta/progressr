@@ -14,7 +14,8 @@ Usage
 			loadContainer: "#my-repeatable-block-parent",
 			nextSelector: ".next-page-invisible-element",
 			singleItemSelector: ".my-repeatable-block",
-			fadeIn: 1500
+			fadeIn: 1500,
+            extraPixels: 100
 		});
     });
 </script>
@@ -50,6 +51,7 @@ Options
 Callbacks
 =========
 
+**beforeAjax()** - works right before Ajax request has been started; receives no arguments  
 **beforeLoad()** - is fired in case of success but before the newly loaded data has been appended to the "loadContainer"; receives no arguments  
 **afterLoad(newItems)** - is fired in case of success after the newly loaded data has been appended to the "loadContainer" and is displayed (after fadeIn effect); newItems jQuery elements array is passed as an argument (to know which are the new elements in the item stack)  
 **onFailure(data)** - works in case of AJAX request failure, receives "data" argument - response of XHR request  

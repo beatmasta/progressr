@@ -3,7 +3,7 @@
  * A progressive AJAX content loading library.
  *
  * Copyright (c) 2013 Alex Vanyan (http://alex-v.net)
- * Version: 1.0
+ * Version: 1.1
  * Requires: jQuery v1.4.2+
  *
  */
@@ -23,6 +23,7 @@
                 nextSelector: "a.next-page",
                 extraPixels: 0,
                 fadeIn: false,
+                beforeAjax: function() {},
                 beforeLoad: function() {},
                 afterLoad: function() {},
                 onFailure: function() {},
@@ -71,6 +72,8 @@
                 if ( $(this).scrollTop() + $(this).height() + extraPixels >= $(this)[0].scrollHeight && ! ajaxInProgress ) {
                     // process the GET type ajax request
                     ajaxInProgress = true;
+                    // before XHR callback
+                    opts.beforeAjax.call();
                     $.ajax({
                         type: "GET",
                         url: reqUrl
@@ -84,7 +87,7 @@
                             newItems = respObj.find(singleItemSel).hide();
                             // pre item load callbacks
                             opts.beforeLoad.call(this, newItems);
-                            loadContainer.append(newItems);
+                            loadContainer.append(newItems.show());
                             // show items immediately or fade in based on "fadeIn" option value
                             newItems.fadeIn(fadeTime);
                             window.setTimeout(function() {
