@@ -52,6 +52,7 @@
             var singleItemSel = guessSingleItem();
             var fadeTime = (opts.fadeIn ? parseInt(opts.fadeIn) : 0);
             var ajaxInProgress = false;
+            var noMoreItemsTrigger = false;
             var newItems;
 
             // bind scroll event to the selector
@@ -59,8 +60,11 @@
             // was called on
             $this.scroll(function() {
                 // if no URL string is given, we've reached the last page
-                if ( typeof reqUrl === "undefined" && ! reqUrl ) {
-                    opts.onNoMoreItems.call();
+                if ( typeof reqUrl === "undefined" || ! reqUrl ) {
+                    if ( ! noMoreItemsTrigger ) {
+                        noMoreItemsTrigger = true;
+                        opts.onNoMoreItems.call();
+                    }
                     return false;
                 }
                 // check if we have reached to the end of the scroll container
@@ -74,7 +78,7 @@
                             var respObj = $(data);
                             // reassign the url variable
                             // to be given to next ajax request object
-                            reqUrl = guessNextHref( respObj.find(opts.nextSelectors) );
+                            reqUrl = guessNextHref( respObj.find(opts.nextSelector) );
                             // find the newly loaded items and append
                             // to "loadContainer" element (defined in options)
                             newItems = respObj.find(singleItemSel).hide();
