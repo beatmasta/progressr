@@ -72,14 +72,14 @@
                         url: reqUrl
                     }).done(function(data) { // in case of success
                             var respObj = $(data);
-                            // pre item load callbacks
-                            opts.beforeLoad.call();
                             // reassign the url variable
                             // to be given to next ajax request object
                             reqUrl = guessNextHref( respObj.find(opts.nextSelectors) );
                             // find the newly loaded items and append
                             // to "loadContainer" element (defined in options)
                             newItems = respObj.find(singleItemSel).hide();
+                            // pre item load callbacks
+                            opts.beforeLoad.call(this, newItems);
                             loadContainer.append(newItems);
                             // show items immediately or fade in based on "fadeIn" option value
                             newItems.fadeIn(fadeTime);
