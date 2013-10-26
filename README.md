@@ -43,7 +43,7 @@ Options
 
 **loadContainer** [default: (jQuery object on which plugin was called, e.g. $("#my-scrollable-container") )] - jquery selector for the element which newly loaded content (block item elements) will be appended to  
 **singleItemSelector** [default: ".item"] - single item element selector string (block item element); the plugin will get items from the next page (e.g. /?page=2) according to this option  
-**nextSelector** [default: "a.next-page"] - selector string to element which has href attribute pointing to the next page (e.g. <a href="/?page=2"></a>); this element will be grabbed again from the newly loaded DOM each time a request to next page is made 
+**nextSelector** [default: "a.next-page"] - selector string to element which has href attribute pointing to the next page (e.g. <a href="/?page=2"></a>); this element will be grabbed again from the newly loaded DOM each time a request to next page is made  
 **extraPixels** [default: 0] - extra added pixels from which progressive loading will occur (by default, loading will begin only after last bottom pixel has been reached)  
 **fadeIn** [default: false] - integer value meaning milliseconds after which newly loaded blocks will fade in after being appended to the "loadContainer" (by default, they will appear without delay and fade effect)  
 
